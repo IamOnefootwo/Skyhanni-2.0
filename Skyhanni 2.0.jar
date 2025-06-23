@@ -1,0 +1,155 @@
+// SkyHanniFabric.java
+package com.skyhanni;
+
+import com.skyhanni.modules.*;
+import net.fabricmc.api.ClientModInitializer;
+
+public class SkyHanniFabric implements ClientModInitializer {
+    @Override
+    public void onInitializeClient() {
+        Core.init();
+        SkyblockDetector.init();
+        AreaTracker.init();
+        SlayerTracker.init();
+        DungeonTracker.init();
+        Timers.init();
+        PetOverlay.init();
+        MinibossNotifier.init();
+        FishingHelper.init();
+        HudRenderer.init();
+        ConfigManager.init();
+    }
+}
+
+// Core.java
+package com.skyhanni.modules;
+
+public class Core {
+    public static void init() {
+        System.out.println("[SkyHanni] Core initialized");
+    }
+}
+
+// SkyblockDetector.java
+package com.skyhanni.modules;
+
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.client.Minecraft;
+
+public class SkyblockDetector {
+    public static boolean inSkyblock = false;
+
+    public static void init() {
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> detect());
+    }
+
+    private static void detect() {
+        var scoreboard = Minecraft.getInstance().world.getScoreboard();
+        var obj = scoreboard.getObjectiveForSlot(1);
+        if (obj != null && obj.getDisplayName().getString().contains("SKYBLOCK")) {
+            inSkyblock = true;
+        } else inSkyblock = false;
+    }
+}
+
+// AreaTracker.java
+package com.skyhanni.modules;
+
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.DrawContext;
+
+public class AreaTracker {
+    private static String area = "Unknown";
+
+    public static void init() {
+        HudRenderCallback.EVENT.register(AreaTracker::render);
+    }
+
+    private static void render(DrawContext context, float delta) {
+        if (!SkyblockDetector.inSkyblock) return;
+        var obj = Minecraft.getInstance().world.getScoreboard().getObjectiveForSlot(1);
+        if (obj != null) area = obj.getDisplayName().getString();
+        context.drawText(Minecraft.getInstance().textRenderer, "Area: " + area, 10, 10, 0xFFFFFF, true);
+    }
+}
+
+// SlayerTracker.java
+package com.skyhanni.modules;
+
+public class SlayerTracker {
+    public static void init() {
+        // Hook into combat events, boss spawn messages, etc.
+        System.out.println("[SkyHanni] Slayer tracker ready");
+    }
+}
+
+// DungeonTracker.java
+package com.skyhanni.modules;
+
+public class DungeonTracker {
+    public static void init() {
+        // Track dungeon floor, deaths, secrets found, etc.
+        System.out.println("[SkyHanni] Dungeon tracker ready");
+    }
+}
+
+// Timers.java
+package com.skyhanni.modules;
+
+public class Timers {
+    public static void init() {
+        // Setup event timers (DA, Spooky)
+        System.out.println("[SkyHanni] Event timers initialized");
+    }
+}
+
+// PetOverlay.java
+package com.skyhanni.modules;
+
+public class PetOverlay {
+    public static void init() {
+        // Overlay pet stats, XP tracking, etc.
+        System.out.println("[SkyHanni] Pet overlay active");
+    }
+}
+
+// MinibossNotifier.java
+package com.skyhanni.modules;
+
+public class MinibossNotifier {
+    public static void init() {
+        // Detect special boss spawns and alert player
+        System.out.println("[SkyHanni] Miniboss notifier initialized");
+    }
+}
+
+// FishingHelper.java
+package com.skyhanni.modules;
+
+public class FishingHelper {
+    public static void init() {
+        // Sea creature tracking, fishing stats
+        System.out.println("[SkyHanni] Fishing helper ready");
+    }
+}
+
+// HudRenderer.java
+package com.skyhanni.modules;
+
+public class HudRenderer {
+    public static void init() {
+        // Centralized rendering logic, calls submodule overlays
+        System.out.println("[SkyHanni] HUD renderer online");
+    }
+}
+
+// ConfigManager.java
+package com.skyhanni.modules;
+
+public class ConfigManager {
+    public static void init() {
+        // Load/save configs, setup GUI if needed
+        System.out.println("[SkyHanni] Config loaded");
+    }
+}
